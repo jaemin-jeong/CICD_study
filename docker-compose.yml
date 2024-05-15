@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  db:
+    image: mysql:8.0
+    volumes:
+      - db-dev:/var/lib/mysql
+    ports:
+      - 3306:3306
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      # MYSQL_ROOT_USER: ${MYSQL_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+
+  server:
+    build: 
+      context: cicd_project
+    restart: unless-stopped
+    volumes:
+      - ./cicd_project:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+     
+volumes:
+  db-dev: {}
