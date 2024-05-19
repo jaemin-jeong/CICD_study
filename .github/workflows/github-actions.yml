@@ -7,13 +7,38 @@ on:
     branches:
       - 'main'
 jobs:
-  if_merged:
+  check-bats-version: # job name
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm install -g bats
-      - run: bats -v
+      - name: Run "npm install -g bats" command
+        run: npm install -g bats
+      - name: Run "bats -v" command
+        run: bats -v
+
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to Amazon ECR
+        run: |
+          docker build -t cicd_study .
+          docker tag cicd_study:latest 637423434954.dkr.ecr.us-east-1.amazonaws.com/cicd_study:latest
+          docker push 637423434954.dkr.ecr.us-east-1.amazonaws.com/cicd_study:latest
