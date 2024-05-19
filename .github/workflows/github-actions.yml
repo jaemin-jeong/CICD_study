@@ -23,7 +23,6 @@ jobs:
         run: bats -v
 
   build:
-    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
     needs: [check-bats-version]
     runs-on: ubuntu-latest
     steps:
