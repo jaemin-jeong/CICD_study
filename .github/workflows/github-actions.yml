@@ -41,5 +41,5 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         run: |
           docker build -t cicd_study -f ./cicd_project/Dockerfile .
-          docker tag cicd_study:latest 637423434954.dkr.ecr.us-east-1.amazonaws.com/cicd_study:latest
-          docker push 637423434954.dkr.ecr.us-east-1.amazonaws.com/cicd_study:latest
+          docker tag cicd_study:latest 637423434954.dkr.ecr.ap-northeast-2.amazonaws.com/cicd_study:latest
+          docker push 637423434954.dkr.ecr.ap-northeast-2.amazonaws.com/cicd_study:latest
